@@ -37,12 +37,12 @@ def run() -> None:
                     if (last_github_update_time != last_cache_update_time) or (
                         not os.path.isdir(repo_path)
                     ):
-                        utils.write_update_time_to_cache(o, r, last_github_update_time)
                         utils.download_repository(o, r)
                         size = utils.get_downloaded_size(o, r)
                         progress.console.print(
                             f"✅ Done. Total downloaded size is {size}"
                         )
+                        utils.write_update_time_to_cache(o, r, last_github_update_time)
                     else:
                         progress.console.print(f"✅ Done. Already up-to-date")
                     progress.update(task, advance=1)
