@@ -3,6 +3,7 @@ import os
 import shutil
 import subprocess
 from typing import Optional
+import rich.progress
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(PROJECT_DIR, "out")
@@ -54,9 +55,22 @@ if os.path.exists(OUT_DIR):
     shutil.rmtree(OUT_DIR)
 os.mkdir(OUT_DIR)
 
+repositories = {o: get_organization_repositories(o) for o in organizations}
+repository_count = sum([len(repositories[o]) for o in organizations])
+
 for o in organizations:
     assert " " not in o, "spaces not allowed in organization names"
-    repositories = get_organization_repositories(o)
-    for r in repositories:
+    for r in repositories[o]:
         assert " " not in r, "spaces not allowed in repository names"
-        download_repository(o, r)
+
+with rich.progress.Progress() as progress:
+    task = progress.add_task(
+        "Downloading GitHub Repositories",
+        total=repository_count,
+    )
+
+    for o in organizations:
+        for r in repositories[o]:
+            progress.console.print(f"{o}/{r}: Downloading code")
+            download_repository(o, r)
+            progress.update(task, advance=1)
