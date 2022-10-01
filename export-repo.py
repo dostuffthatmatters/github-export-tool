@@ -25,7 +25,7 @@ except Exception:
 def run_shell_command(command: str, cwd: Optional[str] = None) -> str:
     process = subprocess.run(command.split(" "), capture_output=True, cwd=cwd)
     assert process.returncode == 0, f'command "{command}" failed'
-    return process.stdout.decode()
+    return process.stdout.decode().strip()
 
 
 def get_organization_repositories(organization: str) -> list[str]:
@@ -51,6 +51,12 @@ def download_repository(organization: str, repository: str) -> None:
     # TODO: download LFS items
 
 
+def get_downloaded_size(organization: str, repository: str) -> str:
+    repo_dir = os.path.join(OUT_DIR, organization, repository)
+    p = run_shell_command(f"du -d 0 -h {repo_dir}")
+    return p.replace("\t", " ").split(" ")[0]
+
+
 if os.path.exists(OUT_DIR):
     shutil.rmtree(OUT_DIR)
 os.mkdir(OUT_DIR)
@@ -73,4 +79,6 @@ with rich.progress.Progress() as progress:
         for r in repositories[o]:
             progress.console.print(f"{o}/{r}: Downloading code")
             download_repository(o, r)
+            size = get_downloaded_size(o, r)
+            progress.console.print(f"{o}/{r}: ✅ Done. Total size is {size}")
             progress.update(task, advance=1)
