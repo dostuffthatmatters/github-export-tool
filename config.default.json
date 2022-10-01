@@ -1,3 +1,4 @@
 {
-    "organizations": ["...", "..."]
+    "organizations": ["...", "..."],
+    "exclude": ["some-org/some-repo-1", "some-org/some-repo-2"]
 }

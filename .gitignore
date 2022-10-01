@@ -2,3 +2,5 @@ out/
 .DS_Store
 .venv
 config.json
+*.pyc
+__pycache__
