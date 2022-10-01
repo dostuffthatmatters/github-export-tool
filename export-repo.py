@@ -63,7 +63,6 @@ os.mkdir(OUT_DIR)
 
 repositories = {o: get_organization_repositories(o) for o in organizations}
 repository_count = sum([len(repositories[o]) for o in organizations])
-
 for o in organizations:
     assert " " not in o, "spaces not allowed in organization names"
     for r in repositories[o]:
@@ -77,8 +76,8 @@ with rich.progress.Progress() as progress:
 
     for o in organizations:
         for r in repositories[o]:
-            progress.console.print(f"{o}/{r}: Downloading code")
+            progress.console.print(f"Processing {o}/{r}")
             download_repository(o, r)
             size = get_downloaded_size(o, r)
-            progress.console.print(f"{o}/{r}: ✅ Done. Total size is {size}")
+            progress.console.print(f"✅ Done. Total size is {size}")
             progress.update(task, advance=1)
