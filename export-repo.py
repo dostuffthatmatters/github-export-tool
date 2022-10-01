@@ -20,6 +20,24 @@ def get_organization_repositories(organization: str) -> list[str]:
     return [x["name"] for x in json.loads(stdout)]
 
 
+def download_repository(organization: str, repository: str) -> None:
+    repo_dir = os.path.join(OUT_DIR, organization, repository)
+    code_dir = os.path.join(repo_dir, "code")
+    run_shell_command(f"mkdir -p {repo_dir}")
+
+    run_shell_command(
+        f"git clone git@github.com:{organization}/{repository}.git --mirror "
+        + os.path.join(code_dir, ".git")
+    )
+    run_shell_command("git config --bool core.bare false", cwd=code_dir)
+    run_shell_command("git reset --hard", cwd=code_dir)
+
+    # TODO: download issues
+    # TODO: download pull requests
+    # TODO: download releases
+    # TODO: download LFS items
+
+
 if os.path.exists(OUT_DIR):
     shutil.rmtree(OUT_DIR)
 os.mkdir(OUT_DIR)
@@ -35,3 +53,4 @@ for organization in ORGANIZATIONS:
 
     for repository in repositories:
         assert " " not in repository, "spaces not allowed in repository names"
+        download_repository(organization, repository)
