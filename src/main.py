@@ -21,13 +21,19 @@ def run() -> None:
             total=repository_count,
         )
 
+        iteration = 0
         for o in organizations:
             for r in repositories[o]:
+                iteration += 1
                 if f"{o}/{r}" in excluded_repositories:
-                    progress.console.print(f"Skipping {o}/{r}")
+                    progress.console.print(
+                        f"({iteration}/{repository_count}) Skipping {o}/{r}", end="\n\n"
+                    )
                     progress.update(task, advance=1)
                 else:
-                    progress.console.print(f"Processing {o}/{r}")
+                    progress.console.print(
+                        f"({iteration}/{repository_count}) Processing {o}/{r}"
+                    )
                     last_github_update_time = utils.get_last_update_time_from_github(
                         o, r
                     )
@@ -37,12 +43,11 @@ def run() -> None:
                     if (last_github_update_time != last_cache_update_time) or (
                         not os.path.isdir(repo_path)
                     ):
+                        progress.console.print(f"🐘 New download necessary")
                         utils.download_repository(o, r)
-                        size = utils.get_downloaded_size(o, r)
-                        progress.console.print(
-                            f"✅ Done. Total downloaded size is {size}"
-                        )
                         utils.write_update_time_to_cache(o, r, last_github_update_time)
                     else:
-                        progress.console.print(f"✅ Done. Already up-to-date")
+                        progress.console.print(f"🕊 Already up-to-date")
+                    size = utils.get_downloaded_size(o, r)
+                    progress.console.print(f"✅ Done. Total size is {size}", end="\n\n")
                     progress.update(task, advance=1)
