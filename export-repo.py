@@ -4,9 +4,21 @@ import shutil
 import subprocess
 from typing import Optional
 
-ORGANIZATIONS = ["tum-esm"]
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(PROJECT_DIR, "out")
+
+try:
+    with open(os.path.join(PROJECT_DIR, "config.json")) as f:
+        config = json.load(f)
+    assert isinstance(config, dict)
+    assert "organizations" in config
+    organizations = config["organizations"]
+    assert isinstance(organizations, list)
+    assert all([isinstance(o, str) for o in organizations])
+except FileNotFoundError:
+    raise FileNotFoundError("config.json does not exist")
+except Exception:
+    raise Exception("config.json not in a valid format")
 
 
 def run_shell_command(command: str, cwd: Optional[str] = None) -> str:
@@ -42,15 +54,9 @@ if os.path.exists(OUT_DIR):
     shutil.rmtree(OUT_DIR)
 os.mkdir(OUT_DIR)
 
-for organization in ORGANIZATIONS:
-    assert " " not in organization, "spaces not allowed in organization names"
-
-    repositories = get_organization_repositories(organization)
-
-    if not os.path.exists(os.path.join(OUT_DIR, organization)):
-        shutil.rmtree(OUT_DIR)
-    os.mkdir(OUT_DIR)
-
-    for repository in repositories:
-        assert " " not in repository, "spaces not allowed in repository names"
-        download_repository(organization, repository)
+for o in organizations:
+    assert " " not in o, "spaces not allowed in organization names"
+    repositories = get_organization_repositories(o)
+    for r in repositories:
+        assert " " not in r, "spaces not allowed in repository names"
+        download_repository(o, r)
