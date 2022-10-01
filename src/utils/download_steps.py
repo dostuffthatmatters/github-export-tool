@@ -8,8 +8,10 @@ PROJECT_DIR = d(d(d(os.path.abspath(__file__))))
 OUT_DIR = os.path.join(PROJECT_DIR, "out")
 
 
-def get_organization_repositories(organization: str) -> list[str]:
-    stdout = run_shell_command(f"gh repo list {organization} --json name --limit 1000")
+def get_organization_repositories(organization: str, github_cli: str) -> list[str]:
+    stdout = run_shell_command(
+        f"{github_cli} repo list {organization} --json name --limit 1000"
+    )
     return [x["name"] for x in json.loads(stdout)]
 
 

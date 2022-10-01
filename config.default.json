@@ -1,4 +1,5 @@
 {
     "organizations": ["...", "..."],
-    "exclude": ["some-org/some-repo-1", "some-org/some-repo-2"]
+    "exclude": ["some-org/some-repo-1", "some-org/some-repo-2"],
+    "github_cli": "gh"
 }

@@ -14,7 +14,7 @@ if not os.path.exists(META_FILE_PATH):
         json.dump({}, f)
 
 
-def load_config() -> tuple[list[str], list[str]]:
+def load_config() -> tuple[list[str], list[str], str]:
     try:
         with open(os.path.join(PROJECT_DIR, "config.json")) as f:
             config = json.load(f)
@@ -23,8 +23,10 @@ def load_config() -> tuple[list[str], list[str]]:
         assert "exclude" in config
         organizations: list[str] = config["organizations"]
         excluded_repositories: list[str] = config["exclude"]
+        github_cli = config["github_cli"]
         assert isinstance(organizations, list)
         assert isinstance(excluded_repositories, list)
+        assert isinstance(github_cli, str)
         assert all([isinstance(o, str) for o in organizations])
         assert all([isinstance(o, str) for o in excluded_repositories])
     except FileNotFoundError:
@@ -32,4 +34,4 @@ def load_config() -> tuple[list[str], list[str]]:
     except Exception:
         raise Exception("config.json not in a valid format")
 
-    return organizations, excluded_repositories
+    return organizations, excluded_repositories, github_cli

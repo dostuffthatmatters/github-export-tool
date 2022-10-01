@@ -7,8 +7,10 @@ OUT_DIR = os.path.join(PROJECT_DIR, "out")
 
 
 def run() -> None:
-    organizations, excluded_repositories = utils.load_config()
-    repositories = {o: utils.get_organization_repositories(o) for o in organizations}
+    organizations, excluded_repositories, github_cli = utils.load_config()
+    repositories = {
+        o: utils.get_organization_repositories(o, github_cli) for o in organizations
+    }
     repository_count = sum([len(repositories[o]) for o in organizations])
     for o in organizations:
         assert " " not in o, "spaces not allowed in organization names"
@@ -35,7 +37,7 @@ def run() -> None:
                         f"({iteration}/{repository_count}) Processing {o}/{r}"
                     )
                     last_github_update_time = utils.get_last_update_time_from_github(
-                        o, r
+                        o, r, github_cli
                     )
                     last_cache_update_time = utils.get_last_update_time_from_cache(o, r)
                     repo_path = os.path.join(OUT_DIR, o, r, "code", ".git")

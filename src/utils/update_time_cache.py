@@ -9,9 +9,13 @@ OUT_DIR = os.path.join(PROJECT_DIR, "out")
 META_FILE_PATH = os.path.join(PROJECT_DIR, "out", "github-meta.json")
 
 
-def get_last_update_time_from_github(organization: str, repository: str) -> str:
+def get_last_update_time_from_github(
+    organization: str, repository: str, github_cli: str
+) -> str:
     return json.loads(
-        run_shell_command(f"gh repo view {organization}/{repository} --json pushedAt")
+        run_shell_command(
+            f"{github_cli} repo view {organization}/{repository} --json pushedAt"
+        )
     )["pushedAt"]
 
 
