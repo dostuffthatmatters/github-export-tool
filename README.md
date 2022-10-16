@@ -10,11 +10,13 @@ A tool that downloads everything from a list of GitHub organizations and users.
 
 This can be used to periodically back up your whole organization. Existing tools that do this backup are crazy expensive (like https://rewind.com/pricing-backups/). And export via migration is only available for GitHub Enterprise.
 
-Under the hood, this tool uses the [GitHub CLI](https://cli.github.com/). Only works when using authentication via SSH. If you want HTTPS support 👉 PRs are welcome.
+Under the hood, this tool uses the [GitHub CLI](https://cli.github.com/).
+
+*Only works when using authentication via SSH. If you want HTTPS support 👉 PRs are welcome.*
 
 <br/>
 
-## ⚔️ How to use it?
+## ⚔️ How to Use it?
 
 1. Install Poetry (https://python-poetry.org/)
 2. Install Python3.10 (https://python.org/)
@@ -39,3 +41,15 @@ poetry install
 ```bash
 python run.py
 ```
+
+<br/>
+
+## 🥷 Some Details
+
+For each organization, it calls `gh repo list <org> --json name --limit 1000` to get the respective repository names.
+
+It clones the repo with all branches using `git clone git@github.com:<org>/<repo>.git --mirror`.
+
+It only downloads the repositories that have been updates since the last run. Using the `gh repo view <org>/<repo> --json pushedAt` command for every repo, it fetches the last commit time on any branch.
+
+
