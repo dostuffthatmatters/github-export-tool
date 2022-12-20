@@ -10,9 +10,9 @@ A tool that downloads everything from a list of GitHub organizations and users.
 
 This can be used to periodically back up your whole organization. Existing tools that do this backup are crazy expensive (like https://rewind.com/pricing-backups/). And export via migration is only available for GitHub Enterprise.
 
-Under the hood, this tool uses the [GitHub CLI](https://cli.github.com/).
+Under the hood, this tool uses the [GitHub CLI](https://cli.github.com/). Currently only works when using authentication via SSH.
 
-_Only works when using authentication via SSH. If you want HTTPS support 👉 PRs are welcome._
+**🙌 Contributions are welcome.**
 
 <br/>
 
