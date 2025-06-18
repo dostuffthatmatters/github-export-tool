@@ -24,8 +24,8 @@ def run() -> None:
         )
 
         iteration = 0
-        for o in organizations:
-            for r in repositories[o]:
+        for o in sorted(organizations):
+            for r in sorted(repositories[o]):
                 iteration += 1
                 if f"{o}/{r}" in excluded_repositories:
                     progress.console.print(
